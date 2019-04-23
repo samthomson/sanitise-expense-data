@@ -3,9 +3,7 @@ services:
   server:
     build:
       context: ./server
-    command: yarn run watch
-    ports:
-      - "3300:3100"
+    command: yarn run build
     volumes:
       - ./server:/server
       - /home/sam/Dropbox/Apps/Iexpense lite:/server/data

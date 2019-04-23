@@ -10,12 +10,12 @@
     "typescript": "^3.4.3"
   },
   "devDependencies": {
+    "@types/node": "^11.13.7",
     "tsc": "^1.20150623.0",
     "tsc-watch": "^2.1.2"
   },
   "scripts": {
     "build": "tsc",
-    "watch": "tsc-watch --onSuccess \"yarn run start\"",
     "start": "ts-node src/sanitise.ts"
   }
 }
