@@ -6,4 +6,3 @@ services:
     command: yarn run build
     volumes:
       - ./server:/server
-      - /home/sam/Dropbox/Apps/Iexpense lite:/server/data

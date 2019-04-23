@@ -6,37 +6,21 @@ import { Expense } from './../src/declarations'
 
 const main  = async () => {
 	// @ts-ignore
-	console.log('\nimporter script\n')
+	console.log('\nsanitisationscript\n')
 
 	// get path of file to import
 	const sImportDir: string =  path.resolve(path.dirname(__filename), 'data')
-	let asFiles: string[] = fs.readdirSync(sImportDir)
-	// only csvs
-	asFiles = asFiles.filter(sPath => sPath.endsWith('.csv'))
-
-	if (asFiles.length < 1) {
-		console.log('no data files to import')
-		return
-	}
-	console.log(`found ${asFiles.length} csv files`)
-	const aiDates: number[] = asFiles.map(
-		sPath => Number(
-			sPath
-				.replace('.csv', '')
-				.replace('ix_', '')
-		)
-	)
-	const iBiggest:number = Math.max(...aiDates)
-	const sImportFileName: string = `ix_${iBiggest}.csv`
-	console.log('determined the latest is: ', sImportFileName)
-
-	const sImportFile: string = path.resolve(sImportDir, sImportFileName)
-	console.log(`importing from ${sImportFile}`)
+	const sImportFileName: string = `san.csv`
+	const sImportPath: string = path.resolve(sImportDir, sImportFileName)
+	console.log(`importing from ${sImportPath}`)
 
 
-	const results: Expense[] = await readInFile(sImportFile)
+	const results: Expense[] = await readInFile(sImportPath)
 	
 	console.log(`${results.length} expenses read from csv`)
+
+	const unique = [...new Set(results.map(item => item.Vendor))]
+	console.log(`${unique.length} unique expenses`)
 
 }
 
