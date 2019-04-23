@@ -37,12 +37,14 @@ const main  = async () => {
 		if (aMatchingFilter.length > 0) {
 			const { Category, Subcategory } = aMatchingFilter[0]
 			cFoundMapping++
-			console.log('\nVendor: ', Vendor)
-			console.log('Update to category: ', Category)
-			console.log('Update to subcategory: ', Subcategory)
+			// console.log('\nVendor: ', Vendor)
+			// console.log('Update to category: ', Category)
+			// console.log('Update to subcategory: ', Subcategory)
 
 			oExpense.Category = Category
 			oExpense.Subcategory = Subcategory
+		} else {
+			console.log(`no mapping found for ${Vendor}`)
 		}
 		// oExpense.Vendor
 	})
