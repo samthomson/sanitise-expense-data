@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as csv from 'csv-parser'
 import * as moment from 'moment'
+import { Parser as Json2csvParser } from 'json2csv'
 import { Expense } from './../src/declarations'
 
 const main  = async () => {
@@ -21,6 +22,21 @@ const main  = async () => {
 
 	const unique = [...new Set(results.map(item => item.Vendor))]
 	console.log(`${unique.length} unique expenses`)
+
+	
+	let fields = ['Date', 'Type', 'Category', 'Subcategory', 'Vendor', 'Payment', 'Currency', 'Amount', 'Note', 'ID']
+
+	const json2csvParser = new Json2csvParser({ fields });
+	const result = json2csvParser.parse(results);
+
+	// console.log(result)
+	fs.writeFile('src/data/out.csv', [result], "utf8", function (err) {
+		if (err) {
+			console.log('Some error occured - file either not saved or corrupted file saved.');
+		} else{
+			console.log('It\'s saved!');
+		}
+	})
 
 }
 
