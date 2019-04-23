@@ -1,0 +1,8 @@
+# dependencies
+server/node_modules
+
+# auto-generated stuff
+server/dist
+
+# data files
+server/importer/data
