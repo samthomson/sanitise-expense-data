@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as csv from 'csv-parser'
 import * as moment from 'moment'
 import { Parser as Json2csvParser } from 'json2csv'
-import { Expense } from './../src/declarations'
+import { Expense, Mapping } from './../src/declarations'
 
 const main  = async () => {
 	// @ts-ignore
@@ -16,18 +16,45 @@ const main  = async () => {
 	console.log(`importing from ${sImportPath}`)
 
 
-	const results: Expense[] = await readInFile(sImportPath)
+	const aExpenses: Expense[] = await readInFile(sImportPath)
+	const aUpdateMappings: Mapping[] = await readInFile(path.resolve(sImportDir, 'map.csv'))
 	
-	console.log(`${results.length} expenses read from csv`)
+	console.log(`${aExpenses.length} expenses read from csv`)
 
-	const unique = [...new Set(results.map(item => item.Vendor))]
+	const unique = [...new Set(aExpenses.map(item => item.Vendor))]
 	console.log(`${unique.length} unique expenses`)
+	console.log(`${aUpdateMappings.length} mappings`)
+
+	if (unique.length !== aUpdateMappings.length) {
+		console.log(`\n\nMissing mappings for ${(unique.length - aUpdateMappings.length)} expenses\n\n`)
+	}
+
+	let cFoundMapping = 0
+	// go through every expense
+	aExpenses.map((oExpense) => {
+		let { Vendor } = oExpense
+		let aMatchingFilter: Mapping[] = aUpdateMappings.filter((oMapping) => oMapping.Vendor === Vendor)
+		if (aMatchingFilter.length > 0) {
+			const { Category, Subcategory } = aMatchingFilter[0]
+			cFoundMapping++
+			console.log('\nVendor: ', Vendor)
+			console.log('Update to category: ', Category)
+			console.log('Update to subcategory: ', Subcategory)
+
+			oExpense.Category = Category
+			oExpense.Subcategory = Subcategory
+		}
+		// oExpense.Vendor
+	})
+	console.log('cFoundMapping: ', cFoundMapping)
 
 	
 	let fields = ['Date', 'Type', 'Category', 'Subcategory', 'Vendor', 'Payment', 'Currency', 'Amount', 'Note', 'ID']
 
 	const json2csvParser = new Json2csvParser({ fields });
-	const result = json2csvParser.parse(results);
+	const result = json2csvParser.parse(aExpenses);
+
+	// console.log(unique)
 
 	// console.log(result)
 	fs.writeFile('src/data/out.csv', [result], "utf8", function (err) {
@@ -37,7 +64,6 @@ const main  = async () => {
 			console.log('It\'s saved!');
 		}
 	})
-
 }
 
 main()
@@ -50,25 +76,9 @@ async function readInFile (sImportFile: string) {
 		fs.createReadStream(sImportFile)
 			.pipe(csv())
 			.on('data', (data: any) => {
-				// only store past expenses
-				// let oDate: moment.Moment = moment(data.Date, 'MM/DD/Y')
-				// if (oDate.isBefore(moment())) {
-					// // convert danish numbers to english numbers
-					// let fAmount: number = parseFloat(data.Amount.replace('.', '').replace(',', '.'))
-					// fAmount *= Number(process.env.DKK_TO_USD) // convert to dollars
-					// fAmount *= -1 // make positive
-					// // remove certain properties
-					// delete data.Payment
-					// delete data.Currency
-					// delete data.Note
-					// delete data.ID
-					
-					return results.push({
-						...data,
-						// Amount: fAmount,
-						// Fullcategory: data.Category + '_' + data.Subcategory
-					})
-				// }
+				return results.push({
+					...data
+				})
 			})
 			.on('end', () => {
 				resolve(results)

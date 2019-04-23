@@ -10,3 +10,9 @@ export type Expense = {
 	Note: string // 'GBP: 9,00 £\nExchange rate: 8.50545829\n',
 	ID: string // '6B1A25B8-5BCD-431A-9190-73F32F91ACC3' }
 }
+
+export type Mapping = {
+	Category: string //'Food/Drink',
+	Subcategory: string // 'Fast Food',
+	Vendor: string // 'Pad thai',
+}
