@@ -29,7 +29,7 @@ const main  = async () => {
 		console.log(`\n\nMissing mappings for ${(unique.length - aUpdateMappings.length)} expenses\n\n`)
 	}
 
-	let cFoundMapping = 0
+	let cFoundMapping = 0, cNoMapping = 0
 	// go through every expense
 	aExpenses.map((oExpense) => {
 		let { Vendor } = oExpense
@@ -45,10 +45,12 @@ const main  = async () => {
 			oExpense.Subcategory = Subcategory
 		} else {
 			console.log(`no mapping found for ${Vendor}`)
+			cNoMapping++
 		}
 		// oExpense.Vendor
 	})
-	console.log('cFoundMapping: ', cFoundMapping)
+	console.log('\nExpenses updated: ', cFoundMapping)
+	console.log('Missing mappings: ', cNoMapping)
 
 	
 	let fields = ['Date', 'Type', 'Category', 'Subcategory', 'Vendor', 'Payment', 'Currency', 'Amount', 'Note', 'ID']
