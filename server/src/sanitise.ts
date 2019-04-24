@@ -80,9 +80,15 @@ async function readInFile (sImportFile: string) {
 		fs.createReadStream(sImportFile)
 			.pipe(csv())
 			.on('data', (data: any) => {
-				return results.push({
+				let oReturn = {
 					...data
-				})
+				}
+				if (data.Amount) {
+					const sAmount: string = data.Amount.replace('.', '')
+					oReturn['Amount'] = sAmount
+				}
+
+				return results.push(oReturn)
 			})
 			.on('end', () => {
 				resolve(results)
